@@ -1,12 +1,11 @@
 -- Database: employee_complaint_management_system
-
+DROP database ECMS;
 CREATE DATABASE IF NOT EXISTS ECMS;
 USE ECMS;
 
 -- Table: users
 CREATE TABLE users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     full_name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL,
@@ -25,3 +24,9 @@ CREATE TABLE complaints (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
+
+INSERT INTO users (password, full_name, email, role)
+VALUES 
+('5678', 'John Doe', 'jdoe@example.com', 'EMPLOYEE'),
+('1234', 'Theodore Jang', 'theoj@example.com', 'ADMIN');
+

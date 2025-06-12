@@ -1,46 +1,181 @@
+/* === Base Styling === */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    background: linear-gradient(135deg, #e0eafc, #cfdef3);
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    overflow-x: hidden;
+    overflow-y: hidden;
 }
 
-.login-container {
-    background-color: #fff;
-    padding: 2em;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+/* === Flip Card Container === */
+.flip-card {
+    background-color: transparent;
+    width: 350px;
+    height: 500px;
+    perspective: 1000px;
+    transform: translateY(-50px);
+}
+
+.flip-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.8s ease-in-out;
+    transform-style: preserve-3d;
+}
+
+.flip-card.flipped .flip-card-inner {
+    transform: rotateY(180deg);
+}
+
+/* === Front and Back Sides === */
+.flip-card-front,
+.flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    padding: 25px;
+    backface-visibility: hidden;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.flip-card-front{
+
+}
+
+.flip-card-back {
+    transform: rotateY(180deg);
+    height: 120%;
+}
+
+/* === Form Styling === */
+form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+}
+
+.flip-card-header {
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
 }
 
 .form-group {
-    margin-bottom: 1em;
+    margin-bottom: 15px;
+    text-align: left;
 }
 
 label {
     display: block;
-    margin-bottom: 0.3em;
+    margin-bottom: 6px;
+    color: #333;
+    font-weight: bold;
 }
 
-input[type="text"],
-input[type="password"] {
+input, select {
     width: 100%;
-    padding: 0.5em;
-    border-radius: 5px;
+    padding: 10px;
+    border-radius: 6px;
     border: 1px solid #ccc;
+    transition: border-color 0.3s ease;
+    font-size: 14px;
+}
+
+input:focus, select:focus {
+    border-color: #007bff;
+    outline: none;
 }
 
 button {
-    padding: 0.7em 1.5em;
-    background-color: #007BFF;
-    color: white;
+    padding: 10px;
+    background-color: #007bff;
     border: none;
-    border-radius: 5px;
+    color: #fff;
+    font-size: 16px;
+    border-radius: 6px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
+button:hover {
+    background-color: #0056b3;
+}
+
+/* === Link to Flip Form === */
+.toggle-link {
+    margin-top: 16px;
+    font-size: 14px;
+    color: #007bff;
+    text-align: center;
+    background-color: #e6f0ff;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.toggle-link:hover {
+    background-color: #d0e7ff;
+    color: #0056b3;
+}
+
+
+
+/* === Error Message Styling === */
 .error-message {
     color: red;
-    margin-top: 1em;
+    font-size: 13px;
+    margin-top: 8px;
+    text-align: center;
 }
+
+
+/* Wrapper container for responsiveness */
+.container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    margin: auto;
+}
+
+/* Make card responsive on small devices */
+/* === Responsive Design === */
+@media (max-width: 500px) {
+    .flip-card {
+        width: 100%;
+        height: 500px;
+        min-height: 500px;
+    }
+
+    .flip-card-front,
+    .flip-card-back {
+        padding: 20px;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+
+    button {
+        font-size: 14px;
+    }
+
+    input, select {
+        font-size: 13px;
+    }
+}
+
