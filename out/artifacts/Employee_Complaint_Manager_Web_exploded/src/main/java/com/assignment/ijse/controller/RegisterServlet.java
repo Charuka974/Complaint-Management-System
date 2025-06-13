@@ -1,8 +1,7 @@
 package com.assignment.ijse.controller;
 
 import com.assignment.ijse.DTO.User;
-import com.assignment.ijse.model.UserModel;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.assignment.ijse.DAO.UserDAO;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -12,11 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.dbcp2.BasicDataSource;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Map;
-import java.util.UUID;
 
 @WebServlet("/RegisterServlet")
 public class RegisterServlet extends HttpServlet {
@@ -33,7 +28,7 @@ public class RegisterServlet extends HttpServlet {
         ServletContext servletContext = getServletContext();
         BasicDataSource dataSource = (BasicDataSource) servletContext.getAttribute("dataSource");
 
-        UserModel userModel = new UserModel(dataSource);
+        UserDAO userDAO = new UserDAO(dataSource);
 
         try {
             // Create and populate the User object
@@ -44,7 +39,7 @@ public class RegisterServlet extends HttpServlet {
             user.setRole(role);
 
             // Try to create user in DB
-            boolean created = userModel.createUser(user);
+            boolean created = userDAO.createUser(user);
 
             if (created) {
                 // Optionally store user in session or redirect to login

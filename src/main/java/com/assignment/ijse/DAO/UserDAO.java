@@ -1,18 +1,21 @@
-package com.assignment.ijse.model;
+package com.assignment.ijse.DAO;
 
 import com.assignment.ijse.DTO.User;
+import jakarta.servlet.ServletException;
 import org.apache.commons.dbcp2.BasicDataSource;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
-public class UserModel {
+public class UserDAO {
 
     private final BasicDataSource dataSource;
 
-    public UserModel(BasicDataSource dataSource) {
+    public UserDAO(BasicDataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -81,26 +84,31 @@ public class UserModel {
         }
     }
 
-    public User getUserByName(String name) throws SQLException {
-        String sql = "SELECT * FROM users WHERE full_name = ?";
+    public List<User> getUsersByName(String name) throws SQLException {
+        List<User> users = new ArrayList<>();
+
+        String sql = "SELECT * FROM users WHERE full_name LIKE ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, name);
+            stmt.setString(1, "%" + name + "%"); // Match any name containing the input
+
             try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
+                while (rs.next()) {
                     User user = new User();
                     user.setId(rs.getInt("user_id"));
                     user.setFullName(rs.getString("full_name"));
                     user.setEmail(rs.getString("email"));
                     user.setPassword(rs.getString("password"));
                     user.setRole(rs.getString("role"));
-                    return user;
+
+                    users.add(user);
                 }
             }
         }
-        return null;
+        return users;
     }
+
 
     public User getUserByEmail(String email) throws SQLException {
         String sql = "SELECT * FROM users WHERE email = ?";
@@ -123,8 +131,34 @@ public class UserModel {
         return null;
     }
 
-    public boolean getAllUsers() throws SQLException {
+    public List<User> getUsersByRole(String role) throws SQLException {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT * FROM users WHERE role = ?";
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, role);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    User user = new User();
+                    user.setId(rs.getInt("user_id"));
+                    user.setFullName(rs.getString("full_name"));
+                    user.setEmail(rs.getString("email"));
+                    user.setPassword(rs.getString("password"));
+                    user.setRole(rs.getString("role"));
+                    users.add(user);
+                }
+            }
+        }
+        return users;
+    }
+
+    public List<User> getAllUsers() throws SQLException {
+        List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM users";
+
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
@@ -136,11 +170,12 @@ public class UserModel {
                 user.setEmail(rs.getString("email"));
                 user.setPassword(rs.getString("password"));
                 user.setRole(rs.getString("role"));
-                // Process the user object as needed, e.g., add to a list or print
+                users.add(user);
             }
-            return true;
         }
+        return users;
     }
+
 
 
 

@@ -1,7 +1,7 @@
 package com.assignment.ijse.controller;
 
 import com.assignment.ijse.DTO.User;
-import com.assignment.ijse.model.UserModel;
+import com.assignment.ijse.DAO.UserDAO;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -24,17 +24,18 @@ public class LoginServlet extends HttpServlet {
         ServletContext context = getServletContext();
         BasicDataSource dataSource = (BasicDataSource) context.getAttribute("dataSource");
 
-        UserModel userModel = new UserModel(dataSource);
+        UserDAO userDAO = new UserDAO(dataSource);
 
         try {
-            User user = userModel.validateUser(email, password);
+            User user = userDAO.validateUser(email, password);
 
             if (user != null) {
                 // Store user in session
                 request.getSession().setAttribute("user", user);
 
                 // Redirect with email and role and id as query parameters
-                response.sendRedirect("web/jsp/dashboard.jsp?email=" + user.getEmail() + "&role=" + user.getRole() + "&id=" + user.getId());
+                response.sendRedirect("web/jsp/dashboard.jsp");
+//                response.sendRedirect("web/jsp/dashboard.jsp?email=" + user.getEmail() + "&role=" + user.getRole() + "&id=" + user.getId());
             } else {
                 response.sendRedirect("web/jsp/login.jsp?login-error=Invalid+credentials");
             }
@@ -44,6 +45,11 @@ public class LoginServlet extends HttpServlet {
             response.sendRedirect("web/jsp/login.jsp?login-error=Server+error");
         }
 
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println("LoginServlet doGet method called");
     }
 
 }

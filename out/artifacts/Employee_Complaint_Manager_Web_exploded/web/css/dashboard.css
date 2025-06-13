@@ -178,32 +178,29 @@ form textarea {
 }
 
 /* === Tables === */
-.content-panel table {
+table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
     font-size: 14px;
 }
 
-.content-panel table thead {
+table thead {
     background-color: #34495e;
     color: white;
 }
 
-.content-panel table th,
-.content-panel table td {
+table th,
+table td {
     padding: 12px 15px;
     text-align: left;
     border-bottom: 1px solid #ddd;
 }
 
-.content-panel table tbody tr:hover {
+table tbody tr:hover {
     background-color: #f0f4f8;
     cursor: pointer;
     transition: background-color 0.2s ease-in-out;
-}
-.content-panel table tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
 }
 
 #complaintStatus {
