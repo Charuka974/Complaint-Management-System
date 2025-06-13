@@ -20,22 +20,22 @@ public class ComplaintDAO {
     }
 
 
-    public boolean updateComplaintAdmin(Complaint complaint) throws SQLException {
+    public boolean updateComplaintByAdmin(int complaintId, String remark, String status) throws SQLException {
         String sql = "UPDATE complaints SET status = ?, remarks = ? WHERE complaint_id = ?";
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, complaint.getStatus());
-            stmt.setString(2, complaint.getRemarks());
-            stmt.setInt(3, complaint.getComplaintId());
+            stmt.setString(1, status);
+            stmt.setString(2, remark);
+            stmt.setInt(3, complaintId);
 
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
         }
     }
 
-    public boolean deleteComplaint(int complaintId) throws SQLException {
+    public boolean deleteComplaintByAdmin(int complaintId) throws SQLException {
         String sql = "DELETE FROM complaints WHERE complaint_id = ?";
 
         try (Connection conn = dataSource.getConnection();

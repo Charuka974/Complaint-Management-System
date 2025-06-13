@@ -27,62 +27,25 @@ public class ManageComplaintAdminServlet extends HttpServlet {
         complaintDAO = new ComplaintDAO(dataSource);
     }
 
-//    @Override
-//    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//
-//        HttpSession session = request.getSession(false);
-//        User user = (session != null) ? (User) session.getAttribute("user") : null;
-//
-//        if (user == null || !"EMPLOYEE".equals(user.getRole())) {
-//            response.sendRedirect("web/jsp/login.jsp?error=Please+login+as+employee");
-//            return;
-//        }
-//
-//        String title = request.getParameter("title");
-//        String description = request.getParameter("description");
-//        int userId = Integer.parseInt(request.getParameter("complaintUserId"));
-//
-//        Complaint complaint = new Complaint();
-//        complaint.setUserId(userId);
-//        complaint.setTitle(title);
-//        complaint.setDescription(description);
-//        complaint.setStatus("PENDING");
-//        complaint.setRemarks("");
-//
-//        try {
-//            boolean success = complaintDAO.saveComplaint(complaint);
-//            if (success) {
-//                response.sendRedirect("web/jsp/dashboard.jsp?success=Complaint+submitted");
-//            } else {
-//                response.sendRedirect("web/jsp/dashboard.jsp?error=Submission+failed");
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            response.sendRedirect("web/jsp/dashboard.jsp?error=Server+error");
-//        }
-//    }
-
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
         HttpSession session = request.getSession(false);
         User user = (session != null) ? (User) session.getAttribute("user") : null;
 
-        if (user == null || !"EMPLOYEE".equals(user.getRole())) {
+        if (user == null || !"ADMIN".equals(user.getRole())) {
             response.sendRedirect("web/jsp/login.jsp?error=Unauthorized+access");
             return;
         }
 
         try {
-            List<Complaint> complaints = complaintDAO.getComplaintsByUser(user.getId());
+            List<Complaint> complaints = complaintDAO.getAllComplaints();
             request.setAttribute("complaints", complaints);
-            request.getRequestDispatcher("web/jsp/dashboard.jsp").forward(request, response);
+            request.getRequestDispatcher("web/jsp/manageComplaintsAdmin.jsp").forward(request, response);
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendRedirect("web/jsp/dashboard.jsp?error=Unable+to+load+your+complaints");
+            response.sendRedirect("web/jsp/manageComplaintsAdmin.jsp?error=Unable+to+load+complaints");
         }
     }
-
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -90,14 +53,14 @@ public class ManageComplaintAdminServlet extends HttpServlet {
         HttpSession session = request.getSession(false);
         User user = (session != null) ? (User) session.getAttribute("user") : null;
 
-        if (user == null || !"EMPLOYEE".equals(user.getRole())) {
-            response.sendRedirect("web/jsp/login.jsp?error=Please+login+as+employee");
+        if (user == null || !"ADMIN".equals(user.getRole())) {
+            response.sendRedirect("web/jsp/login.jsp?error=Please+login+as+admin");
             return;
         }
 
         String action = request.getParameter("action");
         if (action == null) {
-            response.sendRedirect("web/jsp/dashboard.jsp?error=Missing+action");
+            response.sendRedirect("web/jsp/manageComplaintsAdmin.jsp?error=Missing+action");
             return;
         }
 
@@ -110,42 +73,36 @@ public class ManageComplaintAdminServlet extends HttpServlet {
                     handleDelete(request, response, user);
                     break;
                 default:
-                    response.sendRedirect("web/jsp/dashboard.jsp?error=Invalid+action");
+                    response.sendRedirect("web/jsp/manageComplaintsAdmin.jsp?error=Invalid+action");
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendRedirect("web/jsp/dashboard.jsp?error=Server+error");
+            response.sendRedirect("web/jsp/manageComplaintsAdmin.jsp?error=Server+error");
         }
     }
 
     private void handleUpdate(HttpServletRequest request, HttpServletResponse response, User user) throws SQLException, IOException {
         int complaintId = Integer.parseInt(request.getParameter("complaintId"));
-        String title = request.getParameter("title");
-        String description = request.getParameter("description");
+        String remark = request.getParameter("remarks");
+        String status = request.getParameter("status");
 
-        Complaint complaint = new Complaint();
-        complaint.setComplaintId(complaintId);
-        complaint.setUserId(user.getId());
-        complaint.setTitle(title);
-        complaint.setDescription(description);
-
-//        boolean success = complaintDAO.updateComplaintByEmployee(complaint);
-//        if (success) {
-//            response.sendRedirect("web/jsp/dashboard.jsp?success=Complaint+updated");
-//        } else {
-//            response.sendRedirect("web/jsp/dashboard.jsp?error=Update+failed");
-//        }
+        boolean success = complaintDAO.updateComplaintByAdmin(complaintId, remark, status);
+        if (success) {
+            response.sendRedirect(request.getContextPath() + "/ManageComplaintAdminServlet?success=Complaint+updated");
+        } else {
+            response.sendRedirect("web/jsp/manageComplaintsAdmin.jsp?error=Update+failed");
+        }
     }
 
     private void handleDelete(HttpServletRequest request, HttpServletResponse response, User user) throws SQLException, IOException {
         int complaintId = Integer.parseInt(request.getParameter("complaintId"));
 
-//        boolean success = complaintDAO.deleteComplaintByEmployee(complaintId, user.getId());
-//        if (success) {
-//            response.sendRedirect("web/jsp/dashboard.jsp?success=Complaint+deleted");
-//        } else {
-//            response.sendRedirect("web/jsp/dashboard.jsp?error=Delete+failed");
-//        }
+        boolean success = complaintDAO.deleteComplaintByAdmin(complaintId);
+        if (success) {
+            response.sendRedirect(request.getContextPath() + "/ManageComplaintAdminServlet?success=Complaint+deleted");
+        } else {
+            response.sendRedirect("web/jsp/manageComplaintsAdmin.jsp?error=Delete+failed");
+        }
     }
 
 

@@ -31,11 +31,11 @@ public class ManageUsersAdminServlet extends HttpServlet {
             List<User> users = userDAO.getAllUsers();
             request.setAttribute("users", users);
             // Forward the users list to the admin JSP
-            request.getRequestDispatcher("/web/jsp/dashboard.jsp").forward(request, response);
+            request.getRequestDispatcher("/web/jsp/manageUsersAdmin.jsp").forward(request, response);
         } catch (SQLException e) {
             e.printStackTrace();
             request.setAttribute("error", "Unable to load users.");
-            request.getRequestDispatcher("/web/jsp/dashboard.jsp").forward(request, response);
+            request.getRequestDispatcher("/web/jsp/manageUsersAdmin.jsp").forward(request, response);
         }
     }
 

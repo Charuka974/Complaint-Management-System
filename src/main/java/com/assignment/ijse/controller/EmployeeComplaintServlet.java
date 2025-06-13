@@ -29,7 +29,6 @@ public class EmployeeComplaintServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
         HttpSession session = request.getSession(false);
         User user = (session != null) ? (User) session.getAttribute("user") : null;
 
@@ -41,16 +40,15 @@ public class EmployeeComplaintServlet extends HttpServlet {
         try {
             List<Complaint> complaints = complaintDAO.getComplaintsByEmployee(user.getId());
             request.setAttribute("complaints", complaints);
-            request.getRequestDispatcher("web/jsp/dashboard.jsp").forward(request, response);
+            request.getRequestDispatcher("web/jsp/employeeMyComplaints.jsp").forward(request, response);
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendRedirect("web/jsp/dashboard.jsp?error=Unable+to+load+your+complaints");
+            response.sendRedirect("web/jsp/employeeMyComplaints.jsp?error=Unable+to+load+your+complaints");
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
         HttpSession session = request.getSession(false);
         User user = (session != null) ? (User) session.getAttribute("user") : null;
 
@@ -61,7 +59,7 @@ public class EmployeeComplaintServlet extends HttpServlet {
 
         String action = request.getParameter("action");
         if (action == null) {
-            response.sendRedirect("web/jsp/dashboard.jsp?error=Missing+action");
+            response.sendRedirect(request.getContextPath() + "/EmployeeComplaintServlet?error=Missing+action");
             return;
         }
 
@@ -77,11 +75,11 @@ public class EmployeeComplaintServlet extends HttpServlet {
                     handleDelete(request, response, user);
                     break;
                 default:
-                    response.sendRedirect("web/jsp/dashboard.jsp?error=Invalid+action");
+                    response.sendRedirect(request.getContextPath() + "/EmployeeComplaintServlet?error=Invalid+action");
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendRedirect("web/jsp/dashboard.jsp?error=Server+error");
+            response.sendRedirect(request.getContextPath() + "/EmployeeComplaintServlet?error=Server+error");
         }
     }
 
@@ -98,9 +96,9 @@ public class EmployeeComplaintServlet extends HttpServlet {
 
         boolean success = complaintDAO.saveComplaint(complaint);
         if (success) {
-            response.sendRedirect("web/jsp/dashboard.jsp?success=Complaint+submitted");
+            response.sendRedirect(request.getContextPath() + "/EmployeeComplaintServlet?success=Complaint+submitted");
         } else {
-            response.sendRedirect("web/jsp/dashboard.jsp?error=Submission+failed");
+            response.sendRedirect(request.getContextPath() + "/EmployeeComplaintServlet?error=Submission+failed");
         }
     }
 
@@ -109,17 +107,11 @@ public class EmployeeComplaintServlet extends HttpServlet {
         String title = request.getParameter("title");
         String description = request.getParameter("description");
 
-//        Complaint complaint = new Complaint();
-//        complaint.setComplaintId(complaintId);
-//        complaint.setUserId(user.getId());
-//        complaint.setTitle(title);
-//        complaint.setDescription(description);
-
         boolean success = complaintDAO.updateComplaintByEmployee(complaintId, title, description);
         if (success) {
-            response.sendRedirect("web/jsp/dashboard.jsp?success=Complaint+updated");
+            response.sendRedirect(request.getContextPath() + "/EmployeeComplaintServlet?success=Complaint+updated");
         } else {
-            response.sendRedirect("web/jsp/dashboard.jsp?error=Update+failed");
+            response.sendRedirect(request.getContextPath() + "/EmployeeComplaintServlet?error=Update+failed");
         }
     }
 
@@ -128,9 +120,9 @@ public class EmployeeComplaintServlet extends HttpServlet {
 
         boolean success = complaintDAO.deleteComplaintByEmployee(complaintId, user.getId());
         if (success) {
-            response.sendRedirect("web/jsp/dashboard.jsp?success=Complaint+deleted");
+            response.sendRedirect(request.getContextPath() + "/EmployeeComplaintServlet?success=Complaint+deleted");
         } else {
-            response.sendRedirect("web/jsp/dashboard.jsp?error=Delete+failed");
+            response.sendRedirect(request.getContextPath() + "/EmployeeComplaintServlet?error=Delete+failed");
         }
     }
 

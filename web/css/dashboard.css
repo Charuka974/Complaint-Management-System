@@ -46,6 +46,10 @@ body {
     transform: translateX(4px);
 }
 
+h2,h3{
+    text-align: center;
+}
+
 /* === Main Content === */
 .main-content {
     margin-left: 250px;
@@ -207,5 +211,5 @@ table tbody tr:hover {
     width: 150px;
 }
 #complaint-manage-panel {
-    height: 80vh;
+    height: 100vh;
 }
