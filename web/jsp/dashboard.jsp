@@ -18,6 +18,7 @@
 <%--    <link rel="stylesheet" type="text/css" href="../css/dashboard.css">--%>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/web/css/dashboard.css" />
     <script src="../js/dashboard.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </head>
 <body>
@@ -54,33 +55,8 @@
         <h2>Admin Overview</h2>
         <div id="complaint-manage-panel" class="content-panel">
             <h3>Manage Complaints</h3>
-            <form id="updateComplaintForm" action="${pageContext.request.contextPath}/ManageComplaintAdminServlet" method="post">
-                <input type="hidden" name="_method" value="PUT">
-                <div class="form-text-group">
-                    <label>Title: <label id="readTitle"></label></label>
-                    <label>Description: <label id="readDescription"></label></label>
-                    <hr>
-                </div>
-                <div class="form-text-group">
-                    <label for="complaintStatus">Status</label>
-                    <select id="complaintStatus" name="status" required>
-                        <option value="PENDING">Pending</option>
-                        <option value="IN_PROGRESS">In Progress</option>
-                        <option value="RESOLVED">Resolved</option>
-                    </select>
-                </div>
-                <div class="form-text-group">
-                    <input type="hidden" id="complaintId" name="complaintId" value="6">
-                    <label for="complaintRemarks">Remarks</label>
-                    <textarea id="complaintRemarks" name="remarks" rows="5" required placeholder="Enter complaint remarks"></textarea>
-                </div>
 
-                <div class="form-button-group">
-                    <button type="submit"> Update</button>
-                    <button type="button"> Delete</button>
-                    <button type="reset">Clear</button>
-                </div>
-            </form>
+
             <h3>Complaints</h3>
 
             <form method="get" action="${pageContext.request.contextPath}/ManageComplaintAdminServlet">
@@ -178,31 +154,67 @@
         <h2>Employee Dashboard</h2>
         <div id="new-complaint-panel" class="content-panel">
             <h3>Submit a Complaint</h3>
-            <form id="submitComplaintForm" action="${pageContext.request.contextPath}/EmployeeComplaintServlet" method="post">
+            <%
+                String action = request.getAttribute("action") != null ? (String) request.getAttribute("action") : "save";
+                Complaint selectedComplaint = (Complaint) request.getAttribute("selectedComplaint");
+            %>
+            <form method="post" action="${pageContext.request.contextPath}/EmployeeComplaintServlet" id="complaintForm">
+                <!-- Operation type (set dynamically by buttons) -->
+                <input type="hidden" name="action" id="formAction" value="save">
+                <!-- For update/delete -->
+                <input type="hidden" name="complaintId" id="complaintId" value="<%= selectedComplaint != null ? selectedComplaint.getComplaintId() : "" %>">
+                <!-- Always set user ID -->
+                <input type="hidden" name="complaintUserId" value="<%= loggedUser.getId() %>">
+
                 <div class="form-text-group">
-                    <input type="hidden" id="complaintUserId" name="complaintUserId" value="<%= loggedUser.getId() %>">
                     <label for="complaintTitle">Title</label>
-                    <input type="text" id="complaintTitle" name="title" required placeholder="Enter complaint title">
+                    <input type="text" id="complaintTitle" name="title" required
+                           placeholder="Enter complaint title"
+                           value="<%= selectedComplaint != null ? selectedComplaint.getTitle() : "" %>">
                 </div>
 
                 <div class="form-text-group">
                     <label for="complaintDescription">Description</label>
-                    <textarea id="complaintDescription" name="description" rows="5" required placeholder="Describe the issue"></textarea>
+                    <textarea id="complaintDescription" name="description" rows="5" required
+                              placeholder="Describe the issue"><%= selectedComplaint != null ? selectedComplaint.getDescription() : "" %></textarea>
                 </div>
 
                 <div class="form-button-group">
-                    <button type="submit">Submit Complaint</button>
+                    <button type="submit" onclick="setAction('save')">Submit Complaint</button>
+                    <button type="submit" onclick="setAction('update')">Update Complaint</button>
+                    <button type="submit" onclick="return confirmDelete()">Delete Complaint</button>
                     <button type="reset">Clear</button>
-                    <button type="button" id="editBtn">Edit</button>
-                    <button type="button" id="deleteBtn">Delete</button>
                 </div>
             </form>
+            <script>
+                function setAction(actionType) {
+                    document.getElementById('formAction').value = actionType;
+                }
+
+                function confirmDelete() {
+                    Swal.fire({
+                        title: "Are you sure?",
+                        text: "You are about to delete this complaint.",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonText: "Yes, delete it!",
+                        cancelButtonText: "Cancel"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Set action and submit
+                            document.getElementById('formAction').value = 'delete';
+                            document.getElementById('complaintForm').submit();
+                        }
+                    });
+                    return false;
+                }
+            </script>
+
         </div>
 
         <div id="my-complaints-panel" class="content-panel">
             <h3>My Complaints</h3>
-
-            <form method="get" action="${pageContext.request.contextPath}/EmployeeComplaintServlet">
+            <form method="get" action="${pageContext.request.contextPath}/EmployeeComplaintServlet" id="viewMyComplaintsForm">
                 <button type="submit">View My Complaints</button>
             </form>
             <table>
@@ -214,12 +226,12 @@
                     <th>Submitted On</th>
                 </thead>
                 <%
-                    // Retrieve complaints from request attribute (same as in your servlet)
                     List<Complaint> complaints = (List<Complaint>) request.getAttribute("complaints");
                     if (complaints != null && !complaints.isEmpty()) {
                         for (Complaint c : complaints) {
                 %>
-                <tr>
+                <tr onclick="populateComplaintForm('<%= c.getComplaintId() %>', '<%= c.getTitle().replace("'", "\\'") %>', '<%= c.getDescription().replace("'", "\\'") %>')"
+                    style="cursor: pointer;">
                     <td><%= c.getComplaintId() %></td>
                     <td><%= c.getTitle() %></td>
                     <td><%= c.getStatus() %></td>
@@ -235,6 +247,14 @@
                 </tr>
                 <% } %>
             </table>
+            <script>
+                function populateComplaintForm(id, title, description) {
+                    document.querySelector('input[name="action"]').value = "update";
+                    document.querySelector('input[name="complaintId"]').value = id;
+                    document.querySelector('input[name="title"]').value = title;
+                    document.querySelector('textarea[name="description"]').value = description;
+                }
+            </script>
 
         </div>
 

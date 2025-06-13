@@ -30,3 +30,12 @@ VALUES
 ('5678', 'John Doe', 'jdoe@example.com', 'EMPLOYEE'),
 ('1234', 'Theodore Jang', 'theoj@example.com', 'ADMIN');
 
+INSERT INTO complaints (user_id, title, description, status, remarks)
+VALUES 
+(1, 'Internet Issue', 'No internet connectivity in office block B since morning.', 'PENDING', ''),
+(1, 'Broken Chair', 'Chair in cubicle 15 is broken and unsafe.', 'IN_PROGRESS', 'Maintenance scheduled'),
+(1, 'Software License Expired', 'Photoshop license expired, unable to complete design tasks.', 'RESOLVED', 'Renewed on 2024-12-01'),
+(1, 'Air Conditioning Not Working', 'AC not functioning in meeting room 2.', 'PENDING', ''),
+(2, 'Printer Out of Ink', 'Cannot print in lab room 3. Please refill.', 'RESOLVED', 'Ink replaced on 2025-06-01');
+
+SELECT * FROM complaints;
