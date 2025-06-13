@@ -72,7 +72,7 @@ hr {
 }
 
 /* === Complaint Panel === */
-#new-complaint-panel,#my-complaints-panel {
+#user-manage-panel {
     background-color: #fff;
     border-radius: 10px;
     padding: 30px;
@@ -80,12 +80,10 @@ hr {
     margin-bottom: 30px;
 }
 
-#new-complaint-panel,#my-complaints-panel h3 {
+#user-manage-panel h3 {
+    font-size: 20px;
     margin-bottom: 20px;
     color: #2c3e50;
-}
-
-h2,h3{
     text-align: center;
 }
 
@@ -129,9 +127,10 @@ textarea {
     gap: 15px;
     margin-top: 20px;
     flex-wrap: wrap;
+    margin-bottom: 20px;
 }
 
-.form-button-group button {
+button {
     padding: 10px 20px;
     border: none;
     background-color: #2980b9;
@@ -142,13 +141,14 @@ textarea {
     transition: background-color 0.3s ease, transform 0.1s ease;
 }
 
-.form-button-group button:hover {
+button:hover {
     background-color: #3498db;
 }
 
-.form-button-group button:active {
+button:active {
     transform: scale(0.97);
 }
+
 
 /* === Table Styles === */
 table {
@@ -173,6 +173,10 @@ table td {
 tbody tr:hover {
     background-color: #f0f4f8;
     cursor: pointer;
+}
+
+h2,h3{
+    text-align: center;
 }
 
 /* === Responsive Enhancements === */

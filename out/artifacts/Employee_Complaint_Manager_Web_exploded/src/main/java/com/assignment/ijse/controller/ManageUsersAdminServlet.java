@@ -9,6 +9,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.apache.commons.dbcp2.BasicDataSource;
 
 import java.io.IOException;
@@ -19,18 +20,30 @@ import java.util.List;
 @WebServlet("/ManageUsersAdminServlet")
 public class ManageUsersAdminServlet extends HttpServlet {
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private UserDAO userDAO;
 
+    @Override
+    public void init() throws ServletException {
         ServletContext context = getServletContext();
         BasicDataSource dataSource = (BasicDataSource) context.getAttribute("dataSource");
+        userDAO = new UserDAO(dataSource);
+    }
 
-        UserDAO userDAO = new UserDAO(dataSource);
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        HttpSession session = request.getSession(false);
+        User user = (session != null) ? (User) session.getAttribute("user") : null;
+
+        if (user == null || !"ADMIN".equals(user.getRole())) {
+            response.sendRedirect("web/jsp/login.jsp?error=Unauthorized+access");
+            return;
+        }
 
         try {
             List<User> users = userDAO.getAllUsers();
             request.setAttribute("users", users);
-            // Forward the users list to the admin JSP
             request.getRequestDispatcher("/web/jsp/manageUsersAdmin.jsp").forward(request, response);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -39,42 +52,74 @@ public class ManageUsersAdminServlet extends HttpServlet {
         }
     }
 
-
-
     @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        ServletContext context = getServletContext();
-        BasicDataSource dataSource = (BasicDataSource) context.getAttribute("dataSource");
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-        UserDAO userDAO = new UserDAO(dataSource);
+        HttpSession session = request.getSession(false);
+        User user = (session != null) ? (User) session.getAttribute("user") : null;
 
-        response.setContentType("application/json");
-        PrintWriter out = response.getWriter();
-        ObjectMapper objectMapper = new ObjectMapper();
+        if (user == null || !"ADMIN".equals(user.getRole())) {
+            response.sendRedirect("web/jsp/login.jsp?error=Unauthorized+access");
+            return;
+        }
+
+        String action = request.getParameter("action");
+        if (action == null) {
+            response.sendRedirect("web/jsp/manageUsersAdmin.jsp?error=Missing+action");
+            return;
+        }
 
         try {
-            int userId = Integer.parseInt(request.getParameter("user_id"));
-            boolean deleted = userDAO.deleteUser(userId);
-
-            if (deleted) {
-                // Return updated list of users
-                List<User> users = userDAO.getAllUsers(); // You must implement this method
-                String usersJson = objectMapper.writeValueAsString(users);
-                out.print(usersJson);
-            } else {
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                out.print("{\"error\":\"User not found or could not be deleted.\"}");
+            switch (action.toLowerCase()) {
+                case "delete":
+                    handleDelete(request, response);
+                    break;
+                case "search":
+                    handleSearch(request, response);
+                    break;
+                default:
+                    response.sendRedirect("web/jsp/manageUsersAdmin.jsp?error=Invalid+action");
             }
-
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            out.print("{\"error\":\"Internal server error: " + e.getMessage() + "\"}");
-        } finally {
-            out.flush();
-            out.close();
+            response.sendRedirect("web/jsp/manageUsersAdmin.jsp?error=Server+error");
         }
     }
+
+    private void handleDelete(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, IOException, ServletException {
+        int userId = Integer.parseInt(request.getParameter("userId"));
+
+        boolean success = userDAO.deleteUser(userId);
+        if (success) {
+            response.sendRedirect(request.getContextPath() + "/ManageUsersAdminServlet?success=User+deleted");
+        } else {
+            response.sendRedirect("web/jsp/manageUsersAdmin.jsp?error=Delete+failed");
+        }
+    }
+
+    private void handleSearch(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
+        String name = request.getParameter("userName");
+        String email = request.getParameter("userEmail");
+
+        List<User> filteredUsers;
+
+        if ((name == null || name.isBlank()) && (email == null || email.isBlank())) {
+            filteredUsers = userDAO.getAllUsers();
+        } else if (name != null && !name.isBlank() && email != null && !email.isBlank()) {
+            filteredUsers = userDAO.getUsersByNameAndEmail(name, email);
+        } else if (name != null && !name.isBlank()) {
+            filteredUsers = userDAO.getUsersByName(name);
+        } else {
+            filteredUsers = userDAO.getUserByEmail(email);
+        }
+
+        request.setAttribute("users", filteredUsers);
+        request.getRequestDispatcher("/web/jsp/manageUsersAdmin.jsp").forward(request, response);
+    }
+
+
 
 
 }

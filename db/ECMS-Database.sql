@@ -27,15 +27,25 @@ CREATE TABLE complaints (
 
 INSERT INTO users (password, full_name, email, role)
 VALUES 
-('5678', 'John Doe', 'jdoe@example.com', 'EMPLOYEE'),
-('1234', 'Theodore Jang', 'theoj@example.com', 'ADMIN');
+('admin123', 'Alice Fernando', 'alice@example.com', 'ADMIN'),
+('admin456', 'Bob Silva', 'bob@example.com', 'ADMIN'),
+('emp001', 'Chathura Perera', 'chathura@example.com', 'EMPLOYEE'),
+('emp002', 'Dilani Weerasinghe', 'dilani@example.com', 'EMPLOYEE'),
+('emp003', 'Ruwan Gunasekara', 'ruwan@example.com', 'EMPLOYEE');
+
 
 INSERT INTO complaints (user_id, title, description, status, remarks)
-VALUES 
-(1, 'Internet Issue', 'No internet connectivity in office block B since morning.', 'PENDING', ''),
-(1, 'Broken Chair', 'Chair in cubicle 15 is broken and unsafe.', 'IN_PROGRESS', 'Maintenance scheduled'),
-(1, 'Software License Expired', 'Photoshop license expired, unable to complete design tasks.', 'RESOLVED', 'Renewed on 2024-12-01'),
-(1, 'Air Conditioning Not Working', 'AC not functioning in meeting room 2.', 'PENDING', ''),
-(2, 'Printer Out of Ink', 'Cannot print in lab room 3. Please refill.', 'RESOLVED', 'Ink replaced on 2025-06-01');
+VALUES
+(3, 'Monitor Not Working', 'The screen is blank and won’t turn on.', 'PENDING', ''),
+(3, 'Keyboard Malfunction', 'Several keys are not responsive.', 'IN_PROGRESS', 'Replacement requested'),
+(3, 'System Slowdown', 'Computer is extremely slow to respond.', 'RESOLVED', 'RAM upgrade done'),
+(4, 'No Internet Access', 'Wi-Fi is not connecting since morning.', 'PENDING', ''),
+(4, 'Broken Desk Lamp', 'Desk lamp flickers continuously.', 'RESOLVED', 'Replaced bulb on 2025-06-10'),
+(4, 'Phone Line Down', 'Unable to make calls from desk phone.', 'IN_PROGRESS', 'Telecom team investigating'),
+(5, 'AC Leaking', 'Water dripping from the AC unit.', 'PENDING', ''),
+(5, 'Software Not Installed', 'Need MS Project installed for upcoming tasks.', 'RESOLVED', 'Installed on 2025-06-12'),
+(5, 'Mouse Lagging', 'Mouse pointer freezes intermittently.', 'IN_PROGRESS', 'Checked driver compatibility'),
+(5, 'Chair Adjustment Issue', 'Office chair cannot be adjusted.', 'RESOLVED', 'Hydraulics fixed');
 
 SELECT * FROM complaints;
+SELECT * FROM users;

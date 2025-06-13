@@ -153,7 +153,7 @@
                 }
             } else {
             %>
-            <tr><td colspan="5">No complaints found</td></tr>
+            <tr><td>No complaints found</td></tr>
             <% } %>
             </tbody>
         </table>

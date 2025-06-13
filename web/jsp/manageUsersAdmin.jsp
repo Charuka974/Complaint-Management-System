@@ -1,6 +1,5 @@
 <%@ page import="com.assignment.ijse.DTO.User" %>
 <%@ page import="java.util.List" %>
-<%@ page import="com.assignment.ijse.DTO.Complaint" %>
 <%
     User loggedUser = (User) session.getAttribute("user");
     if (loggedUser == null) {
@@ -8,22 +7,20 @@
         return;
     }
 %>
-
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Dashboard</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/web/css/manage-complaints-admin.css" />
+    <title>Manage Users</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/web/css/manage-users-admin.css" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 </head>
 <body>
 
 <div class="sidebar">
     <h2><%= loggedUser.getRole() %> Panel</h2>
     <a href="${pageContext.request.contextPath}/ManageComplaintAdminServlet">Manage Complaints</a>
-    <a href="#user-manage-panel">Manage Users</a>
+    <a href="${pageContext.request.contextPath}/ManageUsersAdminServlet">Manage Users</a>
     <a href="<%= request.getContextPath() %>/LogoutServlet">Logout</a>
 </div>
 
@@ -33,12 +30,13 @@
     <p>Your role: <%= loggedUser.getRole() %></p>
 
     <hr>
-    <h2>Admin Overview</h2>
+    <h2>Manage Users</h2>
 
     <div id="user-manage-panel" class="content-panel">
-        <h3>Manage Users</h3>
+        <h3>Search or Delete Users</h3>
 
-        <form>
+        <form method="post" action="${pageContext.request.contextPath}/ManageUsersAdminServlet" id="searchUserForm">
+            <input type="hidden" name="action" value="search">
             <div class="form-text-group">
                 <input type="hidden" id="userIdInput" name="userId">
 
@@ -54,10 +52,15 @@
             </div>
 
             <div class="form-button-group">
-                <button type="button" id="searchUserBtn">Search</button>
+                <button type="submit">Search</button>
                 <button type="reset">Reset</button>
-                <button type="button" id="deleteUserBtn">Delete</button>
             </div>
+        </form>
+
+        <form method="post" action="${pageContext.request.contextPath}/ManageUsersAdminServlet" id="deleteUserForm">
+            <input type="hidden" name="action" value="delete">
+            <input type="hidden" id="deleteUserId" name="userId">
+            <button type="button" id="deleteUserBtn">Delete Selected User</button>
         </form>
 
         <h3>Users</h3>
@@ -77,7 +80,7 @@
                 if (users != null && !users.isEmpty()) {
                     for (User user : users) {
             %>
-            <tr>
+            <tr onclick="selectUser('<%= user.getId() %>', '<%= user.getFullName() %>', '<%= user.getEmail() %>')">
                 <td><%= user.getId() %></td>
                 <td><%= user.getFullName() %></td>
                 <td><%= user.getEmail() %></td>
@@ -87,15 +90,46 @@
                 }
             } else {
             %>
-            <tr>
-                <td>No users found</td>
-            </tr>
+            <tr><td colspan="4">No users found</td></tr>
             <% } %>
             </tbody>
         </table>
     </div>
-
 </div>
+
+<script>
+    function selectUser(id, name, email) {
+        document.getElementById("userIdInput").value = id;
+        document.getElementById("userNameInput").value = name;
+        document.getElementById("userEmailInput").value = email;
+        document.getElementById("deleteUserId").value = id;
+    }
+
+    document.getElementById("deleteUserBtn").addEventListener("click", function () {
+        const userId = document.getElementById("deleteUserId").value;
+        if (!userId) {
+            Swal.fire({
+                icon: "warning",
+                title: "Please select a user to delete.",
+                showConfirmButton: true
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: "Are you sure?",
+            text: "This action cannot be undone.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, delete!",
+            cancelButtonText: "Cancel"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById("deleteUserForm").submit();
+            }
+        });
+    });
+</script>
 
 </body>
 </html>

@@ -36,10 +36,40 @@
 </div>
 
 <div class="main-content">
-    <h1>Welcome, <%= loggedUser.getFullName() %>!</h1>
-    <p>Your email: <%= loggedUser.getEmail() %></p>
-    <p>Your role: <%= loggedUser.getRole() %></p>
-    <hr>
+    <div class="container">
+        <h1>Welcome, <%= loggedUser.getFullName() %>!</h1>
+        <p>Your email: <%= loggedUser.getEmail() %></p>
+        <p>Your role: <%= loggedUser.getRole() %></p>
+        <hr>
+
+        <!-- Clock Widget -->
+        <div class="clock">
+            <h2>Current Time</h2>
+            <p id="time"></p>
+        </div>
+        <hr>
+
+        <script>
+            function updateClock() {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: true
+                });
+                document.getElementById('time').textContent = timeString;
+            }
+
+            // Initial call and interval update
+            updateClock();
+            setInterval(updateClock, 1000);
+        </script>
+    </div>
+
+
+
+
 
 
 </div>

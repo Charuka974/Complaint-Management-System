@@ -166,7 +166,7 @@
                 icon: 'success',
                 title: "<%= successMsg.replace("+", " ") %>",
                 showConfirmButton: false,
-                timer: 2000
+                timer: 1000
             });
         </script>
         <% } %>
