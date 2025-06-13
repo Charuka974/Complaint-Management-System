@@ -42,7 +42,6 @@
         <p>Your role: <%= loggedUser.getRole() %></p>
         <hr>
 
-        <!-- Clock Widget -->
         <div class="clock">
             <h2>Current Time</h2>
             <p id="time"></p>

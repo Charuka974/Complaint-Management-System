@@ -93,6 +93,12 @@ hr {
     transition: transform 0.3s ease;
 }
 
+.clock p {
+    font-size: 16px;
+    margin-bottom: 8px;
+    color: #ecf0f1;
+}
+
 .clock:hover {
     transform: translateY(-3px);
 }

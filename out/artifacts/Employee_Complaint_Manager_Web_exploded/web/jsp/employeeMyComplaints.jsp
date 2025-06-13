@@ -14,9 +14,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Employee Dashboard</title>
+    <title>Manage My Complaints</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/web/css/employee-my-complaints.css" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="${pageContext.request.contextPath}/web/js/employeeMyComplaints.js" defer></script>
+
 </head>
 <body>
 
@@ -31,7 +33,7 @@
         icon: 'success',
         title: "<%= success.replace("+", " ") %>",
         showConfirmButton: false,
-        timer: 2000
+        timer: 1000
     });
 </script>
 <% } else if (error != null) { %>
@@ -40,7 +42,7 @@
         icon: 'error',
         title: "<%= error.replace("+", " ") %>",
         showConfirmButton: false,
-        timer: 2500
+        timer: 1000
     });
 </script>
 <% } %>
@@ -64,7 +66,6 @@
     <div id="new-complaint-panel" class="content-panel">
         <h3>Submit or Edit Complaint</h3>
         <%
-            String action = request.getAttribute("action") != null ? (String) request.getAttribute("action") : "save";
             Complaint selectedComplaint = (Complaint) request.getAttribute("selectedComplaint");
         %>
         <form method="post" action="${pageContext.request.contextPath}/EmployeeComplaintServlet" id="complaintForm">
@@ -87,41 +88,23 @@
 
             <div class="form-button-group">
                 <button type="submit" onclick="setAction('save')">Submit Complaint</button>
+
+                <% if (selectedComplaint == null || "PENDING".equals(selectedComplaint.getStatus())) { %>
                 <button type="submit" onclick="setAction('update')">Update Complaint</button>
-                <button type="submit" onclick="return confirmDelete()">Delete Complaint</button>
-                <button type="reset">Clear</button>
+                <button type="submit" id="deleteBtn">Delete Complaint</button>
+                <% } else { %>
+                <button type="button" disabled title="Only pending complaints can be updated">Update Complaint</button>
+                <button type="button" disabled title="Only pending complaints can be deleted">Delete Complaint</button>
+                <% } %>
+
+                <button type="reset" id="clearBtn">Clear</button>
             </div>
+
         </form>
 
-        <script>
-            function setAction(actionType) {
-                document.getElementById('formAction').value = actionType;
-            }
+<%--        <script>--%>
 
-            function confirmDelete() {
-                Swal.fire({
-                    title: "Are you sure?",
-                    text: "You are about to delete this complaint.",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonText: "Yes, delete it!",
-                    cancelButtonText: "Cancel"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        document.getElementById('formAction').value = 'delete';
-                        document.getElementById('complaintForm').submit();
-                    }
-                });
-                return false;
-            }
-
-            function populateComplaintForm(id, title, description) {
-                document.getElementById("complaintId").value = id;
-                document.getElementById("complaintTitle").value = title;
-                document.getElementById("complaintDescription").value = description;
-                document.getElementById("formAction").value = "update";
-            }
-        </script>
+<%--        </script>--%>
     </div>
 
     <div id="my-complaints-panel" class="content-panel">
@@ -142,7 +125,19 @@
                 if (complaints != null && !complaints.isEmpty()) {
                     for (Complaint c : complaints) {
             %>
-            <tr onclick="populateComplaintForm('<%= c.getComplaintId() %>', '<%= c.getTitle().replace("'", "\\'") %>', '<%= c.getDescription().replace("'", "\\'") %>')">
+            <%
+                String trAttributes;
+                if ("PENDING".equalsIgnoreCase(c.getStatus())) {
+                    trAttributes = "onclick=\"populateComplaintForm('" + c.getComplaintId() + "', '" +
+                            c.getTitle().replace("'", "\\'") + "', '" +
+                            c.getDescription().replace("'", "\\'") + "')\" style=\"cursor: pointer;\"";
+                } else {
+                    trAttributes = "style='background-color: #f9f9f9; color: #aaa; cursor: not-allowed;' title='Only pending complaints can be edited or deleted'";
+                }
+            %>
+            <tr <%= trAttributes %>>
+
+            <%--            <tr onclick="populateComplaintForm('<%= c.getComplaintId() %>', '<%= c.getTitle().replace("'", "\\'") %>', '<%= c.getDescription().replace("'", "\\'") %>')">--%>
                 <td><%= c.getComplaintId() %></td>
                 <td><%= c.getTitle() %></td>
                 <td><%= c.getStatus() %></td>

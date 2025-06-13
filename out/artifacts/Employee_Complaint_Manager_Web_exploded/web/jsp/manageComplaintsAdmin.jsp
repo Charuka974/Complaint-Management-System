@@ -13,9 +13,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Dashboard</title>
+    <title>Manage Complaints</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/web/css/manage-complaints-admin.css" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="${pageContext.request.contextPath}/web/js/manageComplaintsAdmin.js" defer></script>
 
 </head>
 <body>
@@ -81,29 +82,9 @@
                 <button type="reset">Clear</button>
             </div>
         </form>
-        <script>
-            function setAction(actionType) {
-                document.getElementById('formAction').value = actionType;
-            }
-
-            function confirmDelete() {
-                Swal.fire({
-                    title: "Are you sure?",
-                    text: "You are about to delete this complaint.",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonText: "Yes, delete it!",
-                    cancelButtonText: "Cancel"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Set action and submit
-                        document.getElementById('formAction').value = 'delete';
-                        document.getElementById('complaintForm').submit();
-                    }
-                });
-                return false;
-            }
-        </script>
+<%--        <script>--%>
+<%--            --%>
+<%--        </script>--%>
 
         <h3>Complaints</h3>
 
@@ -144,19 +125,8 @@
             </tr>
             <% } %>
         </table>
-        <script>
-            function populateComplaintForm(id, title, description, status, remarks) {
-                document.getElementById("complaintId").value = id;
-                document.getElementById("complaintTitle").value = title;
-                document.getElementById("complaintDescription").value = description;
-                document.getElementById("complaintRemarks").value = remarks;
-                document.getElementById("complaintStatus").value = status;
-
-                // Set the form action to 'update' to reflect intent
-                document.getElementById("formAction").value = "update";
-            }
-        </script>
-        <%--Alert--%>
+<%--        <script>--%>
+<%--        </script>--%>
         <%
             String successMsg = request.getParameter("success");
             if (successMsg != null) {

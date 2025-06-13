@@ -14,6 +14,7 @@
     <title>Manage Users</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/web/css/manage-users-admin.css" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="${pageContext.request.contextPath}/web/js/manageUsersAdmin.js" defer></script>
 </head>
 <body>
 
@@ -97,39 +98,8 @@
     </div>
 </div>
 
-<script>
-    function selectUser(id, name, email) {
-        document.getElementById("userIdInput").value = id;
-        document.getElementById("userNameInput").value = name;
-        document.getElementById("userEmailInput").value = email;
-        document.getElementById("deleteUserId").value = id;
-    }
-
-    document.getElementById("deleteUserBtn").addEventListener("click", function () {
-        const userId = document.getElementById("deleteUserId").value;
-        if (!userId) {
-            Swal.fire({
-                icon: "warning",
-                title: "Please select a user to delete.",
-                showConfirmButton: true
-            });
-            return;
-        }
-
-        Swal.fire({
-            title: "Are you sure?",
-            text: "This action cannot be undone.",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Yes, delete!",
-            cancelButtonText: "Cancel"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                document.getElementById("deleteUserForm").submit();
-            }
-        });
-    });
-</script>
+<%--<script>--%>
+<%--</script>--%>
 
 </body>
 </html>
