@@ -30,8 +30,7 @@ public class ManageUsersAdminServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
         User user = (session != null) ? (User) session.getAttribute("user") : null;
@@ -53,8 +52,7 @@ public class ManageUsersAdminServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
         User user = (session != null) ? (User) session.getAttribute("user") : null;
@@ -87,8 +85,7 @@ public class ManageUsersAdminServlet extends HttpServlet {
         }
     }
 
-    private void handleDelete(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, IOException, ServletException {
+    private void handleDelete(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException {
         int userId = Integer.parseInt(request.getParameter("userId"));
 
         boolean success = userDAO.deleteUser(userId);

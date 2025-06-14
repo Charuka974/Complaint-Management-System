@@ -18,6 +18,37 @@
 </head>
 <body>
 
+<%
+    String success = request.getParameter("success");
+    String error = request.getParameter("error");
+%>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        <% if (success != null) { %>
+        Swal.fire({
+            icon: "success",
+            title: "Success",
+            text: "<%= success %>",
+            timer: 1500,
+            showConfirmButton: false
+        }).then(() => {
+            window.history.replaceState({}, document.title, window.location.pathname); // Clear the URL parameters
+        });
+        <% } else if (error != null) { %>
+        Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "<%= error %>",
+            showConfirmButton: true
+        }).then(() => {
+            window.history.replaceState({}, document.title, window.location.pathname);
+        });
+        <% } %>
+    });
+</script>
+
+
 <div class="sidebar">
     <h2><%= loggedUser.getRole() %> Panel</h2>
     <a href="${pageContext.request.contextPath}/ManageComplaintAdminServlet">Manage Complaints</a>

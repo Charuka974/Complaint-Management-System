@@ -25,27 +25,39 @@
 <%
     String success = request.getParameter("success");
     String error = request.getParameter("error");
+    if (success != null) {
+        success = java.net.URLDecoder.decode(success, "UTF-8");
 %>
-
-<% if (success != null) { %>
 <script>
-    Swal.fire({
-        icon: 'success',
-        title: "<%= success.replace("+", " ") %>",
-        showConfirmButton: false,
-        timer: 1000
+    document.addEventListener("DOMContentLoaded", () => {
+        Swal.fire({
+            icon: 'success',
+            title: "<%= success %>",
+            showConfirmButton: false,
+            timer: 1000
+        }).then(() => {
+            window.history.replaceState({}, document.title, window.location.pathname);
+        });
     });
 </script>
-<% } else if (error != null) { %>
+<%
+} else if (error != null) {
+    error = java.net.URLDecoder.decode(error, "UTF-8");
+%>
 <script>
-    Swal.fire({
-        icon: 'error',
-        title: "<%= error.replace("+", " ") %>",
-        showConfirmButton: false,
-        timer: 1000
+    document.addEventListener("DOMContentLoaded", () => {
+        Swal.fire({
+            icon: 'error',
+            title: "<%= error %>",
+            showConfirmButton: false,
+            timer: 1000
+        }).then(() => {
+            window.history.replaceState({}, document.title, window.location.pathname);
+        });
     });
 </script>
 <% } %>
+
 
 
 <div class="sidebar">

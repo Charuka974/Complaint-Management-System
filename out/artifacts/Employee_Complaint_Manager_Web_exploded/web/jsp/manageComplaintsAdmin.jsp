@@ -83,7 +83,6 @@
             </div>
         </form>
 <%--        <script>--%>
-<%--            --%>
 <%--        </script>--%>
 
         <h3>Complaints</h3>
@@ -98,6 +97,7 @@
             <th>Status</th>
             <th>Remarks</th>
             <th>Submitted On</th>
+            <th>User ID</th>
             </thead>
             <%
                 List<Complaint> complaints = (List<Complaint>) request.getAttribute("complaints");
@@ -115,6 +115,7 @@
                 <td><%= c.getStatus() %></td>
                 <td><%= c.getRemarks() %></td>
                 <td><%= c.getCreatedAt() %></td>
+                <td><%= c.getUserId() %></td>
             </tr>
             <%
                 }
@@ -130,16 +131,23 @@
         <%
             String successMsg = request.getParameter("success");
             if (successMsg != null) {
+                successMsg = java.net.URLDecoder.decode(successMsg, "UTF-8");
         %>
         <script>
-            Swal.fire({
-                icon: 'success',
-                title: "<%= successMsg.replace("+", " ") %>",
-                showConfirmButton: false,
-                timer: 1000
+            document.addEventListener("DOMContentLoaded", () => {
+                Swal.fire({
+                    icon: 'success',
+                    title: "<%= successMsg %>",
+                    showConfirmButton: false,
+                    timer: 1000
+                }).then(() => {
+                    // Remove ?success=... from the URL so it doesn't show again on reload
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                });
             });
         </script>
         <% } %>
+
 
 
     </div>
