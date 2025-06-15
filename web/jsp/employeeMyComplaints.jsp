@@ -121,6 +121,13 @@
 
     <div id="my-complaints-panel" class="content-panel">
         <h3>My Complaints</h3>
+
+        <%
+            List<Complaint> complaints = (List<Complaint>) request.getAttribute("complaints");
+        %>
+
+        <!-- Pending Complaints Table -->
+        <h4>Pending Complaints</h4>
         <table>
             <thead>
             <tr>
@@ -133,23 +140,13 @@
             </thead>
             <tbody>
             <%
-                List<Complaint> complaints = (List<Complaint>) request.getAttribute("complaints");
-                if (complaints != null && !complaints.isEmpty()) {
+                boolean hasPending = false;
+                if (complaints != null) {
                     for (Complaint c : complaints) {
+                        if ("PENDING".equalsIgnoreCase(c.getStatus())) {
+                            hasPending = true;
             %>
-            <%
-                String trAttributes;
-                if ("PENDING".equalsIgnoreCase(c.getStatus())) {
-                    trAttributes = "onclick=\"populateComplaintForm('" + c.getComplaintId() + "', '" +
-                            c.getTitle().replace("'", "\\'") + "', '" +
-                            c.getDescription().replace("'", "\\'") + "')\" style=\"cursor: pointer;\"";
-                } else {
-                    trAttributes = "style='background-color: #f9f9f9; color: #aaa; cursor: not-allowed;' title='Only pending complaints can be edited or deleted'";
-                }
-            %>
-            <tr <%= trAttributes %>>
-
-            <%--            <tr onclick="populateComplaintForm('<%= c.getComplaintId() %>', '<%= c.getTitle().replace("'", "\\'") %>', '<%= c.getDescription().replace("'", "\\'") %>')">--%>
+            <tr onclick="populateComplaintForm('<%= c.getComplaintId() %>', '<%= c.getTitle().replace("'", "\\'") %>', '<%= c.getDescription().replace("'", "\\'") %>')" style="cursor: pointer;">
                 <td><%= c.getComplaintId() %></td>
                 <td><%= c.getTitle() %></td>
                 <td><%= c.getStatus() %></td>
@@ -157,14 +154,97 @@
                 <td><%= c.getCreatedAt() %></td>
             </tr>
             <%
+                        }
+                    }
                 }
-            } else {
+                if (!hasPending) {
             %>
-            <tr><td>No complaints found</td></tr>
+            <tr><td colspan="5">No pending complaints</td></tr>
             <% } %>
             </tbody>
         </table>
+
+        <br>
+
+        <h4>In-Progress Complaints</h4>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Status</th>
+                <th>Remarks</th>
+                <th>Submitted On</th>
+            </tr>
+            </thead>
+            <tbody>
+            <%
+                boolean hasInProgress = false;
+                if (complaints != null) {
+                    for (Complaint c : complaints) {
+                        if ("IN_PROGRESS".equalsIgnoreCase(c.getStatus())) {
+                            hasInProgress = true;
+            %>
+            <tr style="background-color: #fff3cd;">
+                <td><%= c.getComplaintId() %></td>
+                <td><%= c.getTitle() %></td>
+                <td><%= c.getStatus() %></td>
+                <td><%= c.getRemarks() %></td>
+                <td><%= c.getCreatedAt() %></td>
+            </tr>
+            <%
+                        }
+                    }
+                }
+                if (!hasInProgress) {
+            %>
+            <tr><td colspan="5">No in-progress complaints</td></tr>
+            <% } %>
+            </tbody>
+        </table>
+
+        <br>
+
+        <h4>Resolved Complaints</h4>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Status</th>
+                <th>Remarks</th>
+                <th>Submitted On</th>
+            </tr>
+            </thead>
+            <tbody>
+            <%
+                boolean hasResolved = false;
+                if (complaints != null) {
+                    for (Complaint c : complaints) {
+                        if ("RESOLVED".equalsIgnoreCase(c.getStatus())) {
+                            hasResolved = true;
+            %>
+            <tr style="background-color: #d4edda; color: #155724;">
+                <td><%= c.getComplaintId() %></td>
+                <td><%= c.getTitle() %></td>
+                <td><%= c.getStatus() %></td>
+                <td><%= c.getRemarks() %></td>
+                <td><%= c.getCreatedAt() %></td>
+            </tr>
+            <%
+                        }
+                    }
+                }
+                if (!hasResolved) {
+            %>
+            <tr><td colspan="5">No resolved complaints</td></tr>
+            <% } %>
+            </tbody>
+        </table>
+
+
     </div>
+
 
 </div>
 

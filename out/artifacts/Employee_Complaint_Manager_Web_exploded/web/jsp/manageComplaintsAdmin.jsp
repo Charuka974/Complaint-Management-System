@@ -85,24 +85,30 @@
 <%--        <script>--%>
 <%--        </script>--%>
 
-        <h3>Complaints</h3>
+        <h3>Pending Complaints</h3>
 
 <%--        <form method="get" action="${pageContext.request.contextPath}/ManageComplaintAdminServlet" id="viewAllComplaintsForm">--%>
 <%--            <button type="submit">View My Complaints</button>--%>
 <%--        </form>--%>
         <table>
             <thead>
-            <th>ID</th>
-            <th>Title</th>
-            <th>Status</th>
-            <th>Remarks</th>
-            <th>Submitted On</th>
-            <th>User ID</th>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Status</th>
+                <th>Remarks</th>
+                <th>Submitted On</th>
+                <th>User ID</th>
+            </tr>
             </thead>
+            <tbody>
             <%
                 List<Complaint> complaints = (List<Complaint>) request.getAttribute("complaints");
-                if (complaints != null && !complaints.isEmpty()) {
+                boolean hasPending = false;
+                if (complaints != null) {
                     for (Complaint c : complaints) {
+                        if ("PENDING".equalsIgnoreCase(c.getStatus())) {
+                            hasPending = true;
             %>
             <tr onclick="populateComplaintForm('<%= c.getComplaintId() %>',
                     '<%= c.getTitle() %>',
@@ -118,16 +124,108 @@
                 <td><%= c.getUserId() %></td>
             </tr>
             <%
+                        }
+                    }
                 }
-            } else {
+                if (!hasPending) {
             %>
-            <tr>
-                <td>No complaints found</td>
-            </tr>
+            <tr><td colspan="6">No pending complaints found</td></tr>
             <% } %>
+            </tbody>
         </table>
-<%--        <script>--%>
-<%--        </script>--%>
+
+        <br>
+
+        <h3>In-Progress Complaints</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Status</th>
+                <th>Remarks</th>
+                <th>Submitted On</th>
+                <th>User ID</th>
+            </tr>
+            </thead>
+            <tbody>
+            <%
+                boolean hasInProgress = false;
+                if (complaints != null) {
+                    for (Complaint c : complaints) {
+                        if ("IN_PROGRESS".equalsIgnoreCase(c.getStatus())) {
+                            hasInProgress = true;
+            %>
+            <tr onclick="populateComplaintForm('<%= c.getComplaintId() %>',
+                    '<%= c.getTitle() %>',
+                    '<%= c.getDescription() %>',
+                    '<%= c.getStatus().replace("'", "\\'") %>',
+                    '<%= c.getRemarks().replace("'", "\\'") %>')"
+                style="cursor: pointer; background-color: #fff3cd;">
+                <td><%= c.getComplaintId() %></td>
+                <td><%= c.getTitle() %></td>
+                <td><%= c.getStatus() %></td>
+                <td><%= c.getRemarks() %></td>
+                <td><%= c.getCreatedAt() %></td>
+                <td><%= c.getUserId() %></td>
+            </tr>
+            <%
+                        }
+                    }
+                }
+                if (!hasInProgress) {
+            %>
+            <tr><td colspan="6">No in-progress complaints found</td></tr>
+            <% } %>
+            </tbody>
+        </table>
+
+        <br>
+
+        <h3>Resolved Complaints</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Status</th>
+                <th>Remarks</th>
+                <th>Submitted On</th>
+                <th>User ID</th>
+            </tr>
+            </thead>
+            <tbody>
+            <%
+                boolean hasResolved = false;
+                if (complaints != null) {
+                    for (Complaint c : complaints) {
+                        if ("RESOLVED".equalsIgnoreCase(c.getStatus())) {
+                            hasResolved = true;
+            %>
+            <tr onclick="populateComplaintForm('<%= c.getComplaintId() %>',
+                    '<%= c.getTitle() %>',
+                    '<%= c.getDescription() %>',
+                    '<%= c.getStatus().replace("'", "\\'") %>',
+                    '<%= c.getRemarks().replace("'", "\\'") %>')"
+                style="cursor: pointer; background-color: #d4edda; color: #155724;">
+                <td><%= c.getComplaintId() %></td>
+                <td><%= c.getTitle() %></td>
+                <td><%= c.getStatus() %></td>
+                <td><%= c.getRemarks() %></td>
+                <td><%= c.getCreatedAt() %></td>
+                <td><%= c.getUserId() %></td>
+            </tr>
+            <%
+                        }
+                    }
+                }
+                if (!hasResolved) {
+            %>
+            <tr><td colspan="6">No resolved complaints found</td></tr>
+            <% } %>
+            </tbody>
+        </table>
+
         <%
             String successMsg = request.getParameter("success");
             if (successMsg != null) {

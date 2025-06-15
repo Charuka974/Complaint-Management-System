@@ -1,7 +1,4 @@
 <%@ page import="com.assignment.ijse.DTO.User" %>
-<%@ page import="com.assignment.ijse.DAO.UserDAO" %>
-<%@ page import="java.util.List" %>
-<%@ page import="com.assignment.ijse.DTO.Complaint" %>
 
 <%
     User loggedUser = (User) session.getAttribute("user");
