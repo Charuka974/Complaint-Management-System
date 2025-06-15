@@ -51,18 +51,15 @@ public class EmployeeComplaintServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
         User user = (session != null) ? (User) session.getAttribute("user") : null;
-
         if (user == null || !"EMPLOYEE".equals(user.getRole())) {
             response.sendRedirect("web/jsp/login.jsp?error=Please+login+as+employee");
             return;
         }
-
         String action = request.getParameter("action");
         if (action == null) {
             response.sendRedirect(request.getContextPath() + "/EmployeeComplaintServlet?error=Missing+action");
             return;
         }
-
         try {
             switch (action.toLowerCase()) {
                 case "save":

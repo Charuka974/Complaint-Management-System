@@ -2,7 +2,6 @@ package com.assignment.ijse.controller;
 
 import com.assignment.ijse.DAO.UserDAO;
 import com.assignment.ijse.DTO.User;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -13,7 +12,6 @@ import jakarta.servlet.http.HttpSession;
 import org.apache.commons.dbcp2.BasicDataSource;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
 

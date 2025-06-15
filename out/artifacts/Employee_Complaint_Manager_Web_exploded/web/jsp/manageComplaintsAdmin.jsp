@@ -65,7 +65,7 @@
             <div class="form-text-group">
                 <label for="complaintRemarks">Remarks</label>
                 <textarea id="complaintRemarks" name="remarks" required
-                          placeholder="Remarks"><%= selectedComplaint != null ? selectedComplaint.getDescription() : "" %></textarea>
+                          placeholder="Remarks"><%= selectedComplaint != null ? selectedComplaint.getRemarks() : "" %></textarea>
             </div>
 
 

@@ -32,7 +32,6 @@ public class LoginServlet extends HttpServlet {
             if (user != null) {
                 // Store user in session
                 request.getSession().setAttribute("user", user);
-
                 // Redirect with email and role and id as query parameters
                 response.sendRedirect("web/jsp/dashboard.jsp");
 //                response.sendRedirect("web/jsp/dashboard.jsp?email=" + user.getEmail() + "&role=" + user.getRole() + "&id=" + user.getId());

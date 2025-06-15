@@ -91,13 +91,11 @@
                        placeholder="Enter complaint title"
                        value="<%= selectedComplaint != null ? selectedComplaint.getTitle() : "" %>">
             </div>
-
             <div class="form-text-group">
                 <label for="complaintDescription">Description</label>
                 <textarea id="complaintDescription" name="description" rows="5" required
                           placeholder="Describe the issue"><%= selectedComplaint != null ? selectedComplaint.getDescription() : "" %></textarea>
             </div>
-
             <div class="form-button-group">
                 <button type="submit" onclick="setAction('save')">Submit Complaint</button>
 
@@ -108,15 +106,11 @@
                 <button type="button" disabled title="Only pending complaints can be updated">Update Complaint</button>
                 <button type="button" disabled title="Only pending complaints can be deleted">Delete Complaint</button>
                 <% } %>
-
                 <button type="reset" id="clearBtn">Clear</button>
             </div>
 
         </form>
 
-<%--        <script>--%>
-
-<%--        </script>--%>
     </div>
 
     <div id="my-complaints-panel" class="content-panel">
